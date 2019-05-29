@@ -1,73 +1,73 @@
-import React, {Component} from 'react';
-import axios from 'axios';
+import React, { Component } from "react";
+import axios from "axios";
 
 import {
   withGoogleMap,
   GoogleMap,
   withScriptjs,
   InfoWindow,
-  Marker,
-} from 'react-google-maps';
-import Geocode from 'react-geocode';
-import Autocomplete from 'react-google-autocomplete';
-import {Link} from 'react-router-dom';
+  Marker
+} from "react-google-maps";
+import Geocode from "react-geocode";
+import Autocomplete from "react-google-autocomplete";
+import { Link } from "react-router-dom";
 
-Geocode.setApiKey ('AIzaSyDrEuHN113vHw6DMOymUYyWlVU6EXx_MBE');
-Geocode.enableDebug ();
+Geocode.setApiKey("AIzaSyDrEuHN113vHw6DMOymUYyWlVU6EXx_MBE");
+Geocode.enableDebug();
 
 class Map extends Component {
-  constructor (props) {
-    super (props);
+  constructor(props) {
+    super(props);
     this.state = {
-      address: '',
-      city: '',
-      area: '',
-      hostel: '',
-      land1: '',
-      land2: '',
-      info: '',
+      address: "",
+      city: "",
+      area: "",
+      hostel: "",
+      land1: "",
+      land2: "",
+      info: "",
       redirect: false,
       mapPosition: {
         lat: this.props.center.lat,
-        lng: this.props.center.lng,
+        lng: this.props.center.lng
       },
       markerPosition: {
         lat: this.props.center.lat,
-        lng: this.props.center.lng,
-      },
+        lng: this.props.center.lng
+      }
     };
   }
 
   // Get the current address from the default map position and set those values in the state
 
-  componentDidMount () {
-    Geocode.fromLatLng (
+  componentDidMount() {
+    Geocode.fromLatLng(
       this.state.mapPosition.lat,
       this.state.mapPosition.lng
-    ).then (
+    ).then(
       response => {
         const address = response.results[0].formatted_address,
           addressArray = response.results[0].address_components,
-          city = this.getCity (addressArray),
-          area = this.getArea (addressArray),
-          state = this.getState (addressArray);
+          city = this.getCity(addressArray),
+          area = this.getArea(addressArray),
+          state = this.getState(addressArray);
 
-        this.setState ({
-          address: address ? address : '',
-          area: area ? area : '',
-          city: city ? city : '',
-          state: state ? state : '',
+        this.setState({
+          address: address ? address : "",
+          area: area ? area : "",
+          city: city ? city : "",
+          state: state ? state : ""
         });
       },
       error => {
-        console.error (error);
+        console.error(error);
       }
     );
   }
 
   // Component should only update ( meaning re-render ), when the user selects the address, or drags the marker
 
-  shouldComponentUpdate (nextProps, nextState) {
+  shouldComponentUpdate(nextProps, nextState) {
     if (
       this.state.markerPosition.lat !== this.props.center.lat ||
       this.state.address !== nextState.address ||
@@ -84,11 +84,11 @@ class Map extends Component {
   // Get the city and set the city input value to the one selected
 
   getCity = addressArray => {
-    let city = '';
+    let city = "";
     for (let i = 0; i < addressArray.length; i++) {
       if (
         addressArray[i].types[0] &&
-        'administrative_area_level_2' === addressArray[i].types[0]
+        "administrative_area_level_2" === addressArray[i].types[0]
       ) {
         city = addressArray[i].long_name;
         return city;
@@ -99,13 +99,13 @@ class Map extends Component {
   // Get the area and set the area input value to the one selected
 
   getArea = addressArray => {
-    let area = '';
+    let area = "";
     for (let i = 0; i < addressArray.length; i++) {
       if (addressArray[i].types[0]) {
         for (let j = 0; j < addressArray[i].types.length; j++) {
           if (
-            'sublocality_level_1' === addressArray[i].types[j] ||
-            'locality' === addressArray[i].types[j]
+            "sublocality_level_1" === addressArray[i].types[j] ||
+            "locality" === addressArray[i].types[j]
           ) {
             area = addressArray[i].long_name;
             return area;
@@ -118,12 +118,12 @@ class Map extends Component {
   // Get the address and set the address input value to the one selected
 
   getState = addressArray => {
-    let state = '';
+    let state = "";
     for (let i = 0; i < addressArray.length; i++) {
       for (let i = 0; i < addressArray.length; i++) {
         if (
           addressArray[i].types[0] &&
-          'administrative_area_level_1' === addressArray[i].types[0]
+          "administrative_area_level_1" === addressArray[i].types[0]
         ) {
           state = addressArray[i].long_name;
           return state;
@@ -135,7 +135,7 @@ class Map extends Component {
   // And function for city,state and address input
 
   onChange = event => {
-    this.setState ({[event.target.name]: event.target.value});
+    this.setState({ [event.target.name]: event.target.value });
   };
 
   // This Event triggers when the marker window is closed
@@ -147,25 +147,25 @@ class Map extends Component {
   onPlaceSelected = place => {
     const address = place.formatted_address,
       addressArray = place.address_components,
-      city = this.getCity (addressArray),
-      area = this.getArea (addressArray),
-      state = this.getState (addressArray),
-      latValue = place.geometry.location.lat (),
-      lngValue = place.geometry.location.lng ();
+      city = this.getCity(addressArray),
+      area = this.getArea(addressArray),
+      state = this.getState(addressArray),
+      latValue = place.geometry.location.lat(),
+      lngValue = place.geometry.location.lng();
     // Set these values in the state.
-    this.setState ({
-      address: address ? address : '',
-      area: area ? area : '',
-      city: city ? city : '',
-      state: state ? state : '',
+    this.setState({
+      address: address ? address : "",
+      area: area ? area : "",
+      city: city ? city : "",
+      state: state ? state : "",
       markerPosition: {
         lat: latValue,
-        lng: lngValue,
+        lng: lngValue
       },
       mapPosition: {
         lat: latValue,
-        lng: lngValue,
-      },
+        lng: lngValue
+      }
     });
   };
 
@@ -174,32 +174,69 @@ class Map extends Component {
   // And then set those values in the state.
 
   onMarkerDragEnd = event => {
-    console.log ('event', event);
-    let newLat = event.latLng.lat (),
-      newLng = event.latLng.lng (),
+    console.log("event", event);
+    let newLat = event.latLng.lat(),
+      newLng = event.latLng.lng(),
       addressArray = [];
-    Geocode.fromLatLng (newLat, newLng).then (
+    Geocode.fromLatLng(newLat, newLng).then(
       response => {
         const address = response.results[0].formatted_address,
           addressArray = response.results[0].address_components,
-          city = this.getCity (addressArray),
-          area = this.getArea (addressArray),
-          state = this.getState (addressArray);
-        this.setState ({
-          address: address ? address : '',
-          area: area ? area : '',
-          city: city ? city : '',
-          state: state ? state : '',
+          city = this.getCity(addressArray),
+          area = this.getArea(addressArray),
+          state = this.getState(addressArray);
+        this.setState({
+          address: address ? address : "",
+          area: area ? area : "",
+          city: city ? city : "",
+          state: state ? state : ""
         });
       },
       error => {
-        console.error (error);
+        console.error(error);
       }
     );
   };
 
+  checkMobile = e => {
+    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    var result = "";
+    let makeid = length => {
+      var characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      var charactersLength = characters.length;
+      for (var i = 0; i < length; i++) {
+        result += characters.charAt(
+          Math.floor(Math.random() * charactersLength)
+        );
+      }
+      return result;
+    };
+
+    if (isMobile || (window.innerWidth <= 800 && window.innerHeight <= 600)) {
+      // alert("Mobile phone detected")
+      window.location = `truecallersdk://truesdk/web_verify?requestNonce=${result}
+                               &partnerKey=OXNusf04e9026ed174e2d91c0d269985e827c
+                               &partnerName=hostelandpg
+                               &lang=en
+                               &title=Login`;
+      setTimeout(function() {
+        if (document.hasFocus()) {
+          // Truecaller app not present on the device and you redirect the user
+          // to your alternate verification page
+          alert("app not present");
+        } else {
+          alert("app present");
+          // Truecaller app present on the device and the profile overlay opens
+          // The user clicks on verify & you'll receive the user's access token to fetch the profile on your
+          // callback URL - post which, you can refresh the session at your frontend and complete the user  verification
+        }
+      }, 600);
+    }
+  };
+
   onSubmit = e => {
-    e.preventDefault ();
+    e.preventDefault();
     const pgAndHostel = {
       hostel: this.state.hostel,
       address: this.state.address,
@@ -207,56 +244,56 @@ class Map extends Component {
       area: this.state.area,
       info: this.state.info,
       land1: this.state.land1,
-      land2: this.state.land2,
+      land2: this.state.land2
     };
 
     axios
-      .post ('/api/admin/register', pgAndHostel)
-      .then (res => {
-        alert ('New Hostel added Successfully');
-        this.setState ({
-          redirect: true,
+      .post("/api/admin/register", pgAndHostel)
+      .then(res => {
+        alert("New Hostel added Successfully");
+        this.setState({
+          redirect: true
         });
-        this.props.history.push ('/hostels');
+        this.props.history.push("/hostels");
       })
-      .catch (err => {
-        console.log (err);
+      .catch(err => {
+        console.log(err);
       });
   };
-  render () {
-    const AsyncMap = withScriptjs (
-      withGoogleMap (props => (
+  render() {
+    const AsyncMap = withScriptjs(
+      withGoogleMap(props => (
         <GoogleMap
           google={this.props.google}
           defaultZoom={this.props.zoom}
           defaultCenter={{
             lat: this.state.mapPosition.lat,
-            lng: this.state.mapPosition.lng,
+            lng: this.state.mapPosition.lng
           }}
         >
           {/* For Auto complete Search Box */}
           <Autocomplete
             style={{
-              width: '100%',
-              height: '40px',
-              paddingLeft: '16px',
-              marginTop: '2px',
-              marginBottom: '100px',
+              width: "100%",
+              height: "40px",
+              paddingLeft: "16px",
+              marginTop: "2px",
+              marginBottom: "100px"
             }}
             onPlaceSelected={this.onPlaceSelected}
-            types={['(regions)']}
+            types={["(regions)"]}
             placeholder="Search the Hostel Location"
           />
 
           {/*Marker*/}
           <Marker
             google={this.props.google}
-            name={'Dolores park'}
+            name={"Dolores park"}
             draggable={true}
             onDragEnd={this.onMarkerDragEnd}
             position={{
               lat: this.state.markerPosition.lat,
-              lng: this.state.markerPosition.lng,
+              lng: this.state.markerPosition.lng
             }}
           />
           <Marker />
@@ -265,11 +302,13 @@ class Map extends Component {
             onClose={this.onInfoWindowClose}
             position={{
               lat: this.state.markerPosition.lat + 0.0018,
-              lng: this.state.markerPosition.lng,
+              lng: this.state.markerPosition.lng
             }}
           >
             <div>
-              <span style={{padding: 0, margin: 0}}>{this.state.address}</span>
+              <span style={{ padding: 0, margin: 0 }}>
+                {this.state.address}
+              </span>
             </div>
           </InfoWindow>
         </GoogleMap>
@@ -279,7 +318,9 @@ class Map extends Component {
     if (this.props.center.lat !== undefined) {
       map = (
         <div>
-          <center><h1>Create a Hostel</h1></center>
+          <center>
+            <h1>Create a Hostel</h1>
+          </center>
           <div>
             <form onSubmit={this.onSubmit} redirect="/hostels">
               <div className="form-group">
@@ -290,16 +331,18 @@ class Map extends Component {
                   className="form-control"
                   onChange={this.onChange}
                   value={this.state.name}
+                  onClick={this.checkMobile}
                 />
               </div>
 
               <AsyncMap
                 googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrEuHN113vHw6DMOymUYyWlVU6EXx_MBE&libraries=places"
-                loadingElement={<div style={{height: `100%`}} />}
-                containerElement={<div style={{height: this.props.height}} />}
-                mapElement={<div style={{height: `100%`}} />}
+                loadingElement={<div style={{ height: `100%` }} />}
+                containerElement={<div style={{ height: this.props.height }} />}
+                mapElement={<div style={{ height: `100%` }} />}
               />
-              <br /><br />
+              <br />
+              <br />
               <div className="form-group">
                 <label htmlFor="">City</label>
                 <input
@@ -365,9 +408,7 @@ class Map extends Component {
               </div>
               <div className="row">
                 <div className="form-group pl-3">
-                  <label>
-                    Enter some description about Hostel
-                  </label>
+                  <label>Enter some description about Hostel</label>
                   <textarea
                     className="form-control"
                     name="info"
@@ -395,14 +436,12 @@ class Map extends Component {
               >
                 Hostels
               </Link>
-
             </form>
           </div>
-
         </div>
       );
     } else {
-      map = <div style={{height: this.props.height}} />;
+      map = <div style={{ height: this.props.height }} />;
     }
     return map;
   }

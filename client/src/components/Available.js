@@ -1,29 +1,32 @@
-import React, {Component} from 'react';
+import React, { Component } from "react";
 
-import axios from 'axios';
+import axios from "axios";
 
 class Available extends Component {
-  constructor () {
-    super ();
+  constructor() {
+    super();
     this.state = {
-      details: [{}],
+      details: [{}]
     };
   }
 
-  componentDidMount () {
-    axios.get ('/api/admin').then (data => data).then (data => {
-      this.setState ({
-        details: data.data,
+  componentDidMount() {
+    axios
+      .get("/api/admin")
+      .then(data => data)
+      .then(data => {
+        this.setState({
+          details: data.data
+        });
       });
-    });
   }
 
-  render () {
+  render() {
     return (
       <div>
         <h1 className="available pt-4">Available Hostels</h1>
         <b>
-          {this.state.details.map (data => {
+          {this.state.details.map(data => {
             return (
               <div>
                 <center className="pt-5">
@@ -78,7 +81,6 @@ class Available extends Component {
             );
           })}
         </b>
-
       </div>
     );
   }

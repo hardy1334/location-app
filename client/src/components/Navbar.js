@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
-import {Link, withRouter} from 'react-router-dom';
+import React, { Component } from "react";
+import { Link, withRouter } from "react-router-dom";
 
 class Navbar extends Component {
-  render () {
+  render() {
     let create = (
       <nav className="navbar navbar-expand-lg navbar-light  new-nav">
         <Link
@@ -31,12 +31,8 @@ class Navbar extends Component {
       </nav>
     );
 
-    return (
-      <div>
-        {this.props.location.pathname === '/' ? hostels : create}
-      </div>
-    );
+    return <div>{this.props.location.pathname === "/" ? hostels : create}</div>;
   }
 }
 
-export default withRouter (Navbar);
+export default withRouter(Navbar);

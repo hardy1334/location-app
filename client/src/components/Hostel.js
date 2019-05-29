@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
+import React, { Component } from "react";
 
-import Map from './Map';
+import Map from "./Map";
 
 class Hostel extends Component {
-  render () {
+  render() {
     return (
       <div className="create-hostel pt-5">
         <div className="w-50 container">
@@ -11,14 +11,12 @@ class Hostel extends Component {
             google={this.props.google}
             center={{
               lat: 31.326015,
-              lng: 75.576180,
+              lng: 75.57618
             }}
             height="300px"
             zoom={15}
           />
-
         </div>
-
       </div>
     );
   }
